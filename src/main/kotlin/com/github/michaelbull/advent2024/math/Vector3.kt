@@ -15,7 +15,7 @@ data class Vector3(
     constructor(triple: Triple<Int, Int, Int>) : this(
         x = triple.first,
         y = triple.second,
-        z = triple.third
+        z = triple.third,
     )
 
     operator fun unaryPlus(): Vector3 {
@@ -193,19 +193,19 @@ data class Vector3(
         val ZERO = Vector3(
             x = 0,
             y = 0,
-            z = 0
+            z = 0,
         )
 
         val UP = Vector3(
             x = +1,
             y = +1,
-            z = +1
+            z = +1,
         )
 
         val DOWN = Vector3(
             x = -1,
             y = -1,
-            z = -1
+            z = -1,
         )
     }
 }
