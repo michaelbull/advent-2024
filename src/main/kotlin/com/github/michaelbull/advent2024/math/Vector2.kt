@@ -13,7 +13,7 @@ data class Vector2(
 
     constructor(pair: Pair<Int, Int>) : this(
         x = pair.first,
-        y = pair.second
+        y = pair.second,
     )
 
     operator fun unaryPlus(): Vector2 {
@@ -176,14 +176,14 @@ data class Vector2(
             NORTH,
             EAST,
             SOUTH,
-            WEST
+            WEST,
         )
 
         val ORDINAL_DIRECTIONS = setOf(
             NORTH_EAST,
             SOUTH_EAST,
             SOUTH_WEST,
-            NORTH_WEST
+            NORTH_WEST,
         )
 
         val DIRECTIONS = CARDINAL_DIRECTIONS + ORDINAL_DIRECTIONS
