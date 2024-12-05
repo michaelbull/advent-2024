@@ -16,36 +16,30 @@ infix fun Vector2Progression.step(step: Vector2): Vector2Progression {
     return Vector2Progression.fromClosedRange(first, last, progressionStep)
 }
 
-open class Vector2Progression(
-    private val start: Vector2,
-    private val endInclusive: Vector2,
+open class Vector2Progression internal constructor(
+    start: Vector2,
+    endInclusive: Vector2,
     val step: Vector2,
 ) : Iterable<Vector2> {
 
     val first: Vector2 = start
-    val last: Vector2
 
-    private val isEmpty: Boolean
+    val last: Vector2 = Vector2(
+        x = getProgressionLastElement(start, endInclusive, step, Vector2::x),
+        y = getProgressionLastElement(start, endInclusive, step, Vector2::y),
+    )
+
+    val xRange: IntRange
+        get() = first.x..last.x
+
+    val yRange: IntRange
+        get() = first.y..last.y
+
+    private val isEmpty = isProgressionEmpty(start, endInclusive, step)
 
     init {
         require(step != Vector2.ZERO) { "Step must be non-zero." }
-
-        val emptyX = isEmpty(Vector2::x)
-        val emptyY = isEmpty(Vector2::y)
-
-        isEmpty = emptyX || emptyY
-
-        last = Vector2(
-            x = if (emptyX) endInclusive.x else getLastElement(Vector2::x),
-            y = if (emptyY) endInclusive.y else getLastElement(Vector2::y),
-        )
     }
-
-    val xRange
-        get() = first.x..last.x
-
-    val yRange
-        get() = first.y..last.y
 
     override fun iterator(): Iterator<Vector2> {
         return if (isEmpty) {
@@ -61,28 +55,6 @@ open class Vector2Progression(
 
     fun isNotEmpty(): Boolean {
         return !isEmpty()
-    }
-
-    private inline fun isEmpty(dimension: (Vector2) -> Int): Boolean = when {
-        dimension(step) > 0 -> dimension(start) > dimension(endInclusive)
-        dimension(step) < 0 -> dimension(start) < dimension(endInclusive)
-        else -> if (dimension(start) == dimension(endInclusive)) {
-            false
-        } else {
-            throw IllegalArgumentException("Start and end must be equal when step is zero.")
-        }
-    }
-
-    private inline fun getLastElement(dimension: (Vector2) -> Int): Int {
-        val start = dimension(this.start)
-        val end = dimension(this.endInclusive)
-        val step = dimension(this.step)
-
-        return if (step == 0) {
-            start
-        } else {
-            IntProgression.fromClosedRange(start, end, step).last
-        }
     }
 
     companion object {
@@ -127,5 +99,43 @@ open class Vector2Progression(
 
             else -> throw NoSuchElementException()
         }
+    }
+}
+
+private fun isProgressionEmpty(start: Vector2, endInclusive: Vector2, step: Vector2): Boolean {
+    return Vector2.DIMENSIONS.any { dimension ->
+        val startValue = dimension(start)
+        val endValue = dimension(endInclusive)
+        val stepValue = dimension(step)
+        isProgressionEmpty(startValue, endValue, stepValue)
+    }
+}
+
+private fun isProgressionEmpty(start: Int, end: Int, step: Int): Boolean {
+    return when {
+        step > 0 -> start > end
+        step < 0 -> start < end
+        else -> if (start == end) {
+            false
+        } else {
+            throw IllegalArgumentException("Start and end must be equal when step is zero.")
+        }
+    }
+}
+
+private inline fun getProgressionLastElement(
+    start: Vector2,
+    endInclusive: Vector2,
+    step: Vector2,
+    dimension: (Vector2) -> Int,
+): Int {
+    val startValue = dimension(start)
+    val endInclusiveValue = dimension(endInclusive)
+    val stepValue = dimension(step)
+
+    return when {
+        isProgressionEmpty(startValue, endInclusiveValue, stepValue) -> endInclusiveValue
+        startValue == endInclusiveValue -> endInclusiveValue
+        else -> IntProgression.fromClosedRange(startValue, endInclusiveValue, stepValue).last
     }
 }

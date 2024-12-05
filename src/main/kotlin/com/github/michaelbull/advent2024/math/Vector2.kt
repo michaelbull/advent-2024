@@ -156,6 +156,11 @@ data class Vector2(
     }
 
     companion object {
+        val DIMENSIONS = setOf(
+            Vector2::x,
+            Vector2::y,
+        )
+
         val MIN_VALUE = Vector2(Int.MIN_VALUE, Int.MIN_VALUE)
         val MAX_VALUE = Vector2(Int.MAX_VALUE, Int.MAX_VALUE)
 

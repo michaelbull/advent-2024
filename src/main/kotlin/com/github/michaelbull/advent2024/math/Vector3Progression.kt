@@ -18,41 +18,34 @@ infix fun Vector3Progression.step(step: Vector3): Vector3Progression {
     return Vector3Progression.fromClosedRange(first, last, progressionStep)
 }
 
-open class Vector3Progression(
-    private val start: Vector3,
-    private val endInclusive: Vector3,
+open class Vector3Progression internal constructor(
+    start: Vector3,
+    endInclusive: Vector3,
     val step: Vector3,
 ) : Iterable<Vector3> {
 
     val first: Vector3 = start
-    val last: Vector3
 
-    private val isEmpty: Boolean
+    val last: Vector3 = Vector3(
+        x = getProgressionLastElement(start, endInclusive, step, Vector3::x),
+        y = getProgressionLastElement(start, endInclusive, step, Vector3::y),
+        z = getProgressionLastElement(start, endInclusive, step, Vector3::z),
+    )
+
+    val xRange: IntRange
+        get() = first.x..last.x
+
+    val yRange: IntRange
+        get() = first.y..last.y
+
+    val zRange: IntRange
+        get() = first.z..last.z
+
+    private val isEmpty = isProgressionEmpty(start, endInclusive, step)
 
     init {
         require(step != Vector3.ZERO) { "Step must be non-zero." }
-
-        val emptyX = isEmpty(Vector3::x)
-        val emptyY = isEmpty(Vector3::y)
-        val emptyZ = isEmpty(Vector3::z)
-
-        isEmpty = emptyX || emptyY || emptyZ
-
-        last = Vector3(
-            x = if (emptyX) endInclusive.x else getLastElement(Vector3::x),
-            y = if (emptyY) endInclusive.y else getLastElement(Vector3::y),
-            z = if (emptyZ) endInclusive.z else getLastElement(Vector3::z),
-        )
     }
-
-    val xRange
-        get() = first.x..last.x
-
-    val yRange
-        get() = first.y..last.y
-
-    val zRange
-        get() = first.z..last.z
 
     override fun iterator(): Iterator<Vector3> {
         return if (isEmpty) {
@@ -68,28 +61,6 @@ open class Vector3Progression(
 
     fun isNotEmpty(): Boolean {
         return !isEmpty()
-    }
-
-    private inline fun isEmpty(dimension: (Vector3) -> Int): Boolean = when {
-        dimension(step) > 0 -> dimension(start) > dimension(endInclusive)
-        dimension(step) < 0 -> dimension(start) < dimension(endInclusive)
-        else -> if (dimension(start) == dimension(endInclusive)) {
-            false
-        } else {
-            throw IllegalArgumentException("Start and end must be equal when step is zero.")
-        }
-    }
-
-    private inline fun getLastElement(dimension: (Vector3) -> Int): Int {
-        val start = dimension(this.start)
-        val end = dimension(this.endInclusive)
-        val step = dimension(this.step)
-
-        return if (step == 0) {
-            start
-        } else {
-            IntProgression.fromClosedRange(start, end, step).last
-        }
     }
 
     companion object {
@@ -140,5 +111,43 @@ open class Vector3Progression(
 
             else -> throw NoSuchElementException()
         }
+    }
+}
+
+private fun isProgressionEmpty(start: Vector3, endInclusive: Vector3, step: Vector3): Boolean {
+    return Vector3.DIMENSIONS.any { dimension ->
+        val startValue = dimension(start)
+        val endValue = dimension(endInclusive)
+        val stepValue = dimension(step)
+        isProgressionEmpty(startValue, endValue, stepValue)
+    }
+}
+
+private fun isProgressionEmpty(start: Int, end: Int, step: Int): Boolean {
+    return when {
+        step > 0 -> start > end
+        step < 0 -> start < end
+        else -> if (start == end) {
+            false
+        } else {
+            throw IllegalArgumentException("Start and end must be equal when step is zero.")
+        }
+    }
+}
+
+private inline fun getProgressionLastElement(
+    start: Vector3,
+    endInclusive: Vector3,
+    step: Vector3,
+    dimension: (Vector3) -> Int,
+): Int {
+    val startValue = dimension(start)
+    val endInclusiveValue = dimension(endInclusive)
+    val stepValue = dimension(step)
+
+    return when {
+        isProgressionEmpty(startValue, endInclusiveValue, stepValue) -> endInclusiveValue
+        startValue == endInclusiveValue -> endInclusiveValue
+        else -> IntProgression.fromClosedRange(startValue, endInclusiveValue, stepValue).last
     }
 }

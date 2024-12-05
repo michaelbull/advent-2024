@@ -2,10 +2,22 @@ package com.github.michaelbull.advent2024.math
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class Vector3ProgressionTest {
+
+    @Test
+    fun `zero step`() {
+        val start = Vector3(10, 0, 0)
+        val endInclusive = Vector3(0, 0, 0)
+        val step = Vector3(0, 0, 0)
+
+        assertFailsWith<IllegalArgumentException> {
+            (start..endInclusive).step(step)
+        }
+    }
 
     @Test
     fun `empty progression in one dimension`() {
@@ -14,8 +26,9 @@ class Vector3ProgressionTest {
         val step = Vector3(1, 0, 0)
 
         val progression = (start..endInclusive).step(step)
-        val iterator = progression.iterator()
+        assertTrue(progression.isEmpty())
 
+        val iterator = progression.iterator()
         assertFalse(iterator.hasNext())
     }
 

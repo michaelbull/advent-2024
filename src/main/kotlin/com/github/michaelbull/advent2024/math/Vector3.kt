@@ -178,6 +178,12 @@ data class Vector3(
     }
 
     companion object {
+        val DIMENSIONS = setOf(
+            Vector3::x,
+            Vector3::y,
+            Vector3::z,
+        )
+
         val MIN_VALUE = Vector3(
             x = Int.MIN_VALUE,
             y = Int.MIN_VALUE,
