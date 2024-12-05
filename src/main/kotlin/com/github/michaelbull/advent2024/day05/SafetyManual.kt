@@ -17,28 +17,25 @@ private fun String.toUpdate(): Update {
 }
 
 fun Sequence<String>.toSafetyManual(): SafetyManual {
-    val rules = mutableListOf<Rule>()
-    val updates = mutableListOf<Update>()
-    var readRules = true
+    val iterator = iterator()
 
-    for (line in this) {
-        if (line.isBlank()) {
-            readRules = false
-        } else if (readRules) {
-            rules += line.toRule()
-        } else {
-            updates += line.toUpdate()
-        }
-    }
+    val rules = iterator.asSequence()
+        .takeWhile(String::isNotEmpty)
+        .map(String::toRule)
+        .toSet()
+
+    val updates = iterator.asSequence()
+        .map(String::toUpdate)
+        .toList()
 
     return SafetyManual(
-        rules = rules.toList(),
-        updates = updates.toList(),
+        rules = rules,
+        updates = updates,
     )
 }
 
 data class SafetyManual(
-    val rules: List<Rule>,
+    val rules: Set<Rule>,
     val updates: List<Update>,
 ) {
 
