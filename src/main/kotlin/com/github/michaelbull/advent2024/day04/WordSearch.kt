@@ -73,8 +73,8 @@ data class WordSearch(
             ),
 
             NORTH_WEST to listOf(
-                WEST to NORTH_EAST,
                 NORTH to SOUTH_WEST,
+                WEST to NORTH_EAST,
             ),
 
             SOUTH_EAST to listOf(
