@@ -47,55 +47,26 @@ data class SafetyManual(
     }
 
     fun reorderIncorrectUpdates(): List<Update> {
-        return updates.filter(::isIncorrect).map(::reorder)
+        return updates.filterNot(::isCorrect).map(::reorder)
     }
 
     private fun isCorrect(update: Update): Boolean {
         return update.zipWithNext().all(::isCorrect)
     }
 
-    private fun isIncorrect(update: Update): Boolean {
-        return !isCorrect(update)
-    }
-
     private fun isCorrect(rule: Rule): Boolean {
         return rule in rules
     }
 
-    private fun isIncorrect(rule: Rule): Boolean {
-        return !isCorrect(rule)
-    }
-
     private fun reorder(update: Update): Update {
-        val reordered = update.toMutableList()
-        var incorrect = true
-
-        while (incorrect) {
-            val index = reordered.indexOfFirstPair(::isIncorrect)
-
-            if (index == -1) {
-                incorrect = false
-            } else {
-                reordered.swapWithNext(index)
-            }
-        }
-
-        return reordered
+        return update.sortedWith(updateComparator)
     }
-}
 
-private inline fun <T> List<T>.indexOfFirstPair(predicate: (Pair<T, T>) -> Boolean): Int {
-    return zipWithNext().indexOfFirst(predicate)
-}
-
-private fun <T> List<T>.pairAt(index: Int): Pair<T, T> {
-    val curr = this[index]
-    val next = this[index + 1]
-    return curr to next
-}
-
-private fun <T> MutableList<T>.swapWithNext(index: Int) {
-    val (curr, next) = pairAt(index)
-    this[index] = next
-    this[index + 1] = curr
+    private val updateComparator = Comparator<Int> { a, b ->
+        when {
+            isCorrect(a to b) -> -1
+            isCorrect(b to a) -> +1
+            else -> 0
+        }
+    }
 }
