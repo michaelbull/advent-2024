@@ -56,7 +56,7 @@ data class WordSearch(
     }
 
     private fun String.crosses(position: Vector2, direction: Vector2): Boolean {
-        val cross = CROSSES.getOrElse(direction, ::emptyList)
+        val cross = CROSSES.getOrElse(direction, ::emptyMap)
 
         return cross.any { (crossOffset, crossDirection) ->
             val crossPosition = position + (crossOffset * (length - 1))
@@ -67,22 +67,22 @@ data class WordSearch(
 
     private companion object {
         private val CROSSES = mapOf(
-            NORTH_EAST to listOf(
+            NORTH_EAST to mapOf(
                 NORTH to SOUTH_EAST,
                 EAST to NORTH_WEST,
             ),
 
-            NORTH_WEST to listOf(
+            NORTH_WEST to mapOf(
                 NORTH to SOUTH_WEST,
                 WEST to NORTH_EAST,
             ),
 
-            SOUTH_EAST to listOf(
+            SOUTH_EAST to mapOf(
                 SOUTH to NORTH_EAST,
                 EAST to SOUTH_WEST,
             ),
 
-            SOUTH_WEST to listOf(
+            SOUTH_WEST to mapOf(
                 SOUTH to NORTH_WEST,
                 WEST to SOUTH_EAST,
             ),
