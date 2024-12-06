@@ -49,19 +49,35 @@ class Vector2IntMap(
         return values[indexOf(position)]
     }
 
-    fun getOrNull(x: Int, y: Int): Int? {
+    fun getOrDefault(x: Int, y: Int, defaultValue: Int): Int {
         return if (x in xRange && y in yRange) {
             values[indexOf(x, y)]
         } else {
-            null
+            defaultValue
         }
     }
 
-    fun getOrNull(position: Vector2): Int? {
+    fun getOrDefault(position: Vector2, defaultValue: Int): Int {
         return if (position in this) {
             values[indexOf(position)]
         } else {
-            null
+            defaultValue
+        }
+    }
+
+    fun getOrElse(x: Int, y: Int, defaultValue: () -> Int): Int {
+        return if (x in xRange && y in yRange) {
+            values[indexOf(x, y)]
+        } else {
+            defaultValue()
+        }
+    }
+
+    fun getOrElse(position: Vector2, defaultValue: () -> Int): Int {
+        return if (position in this) {
+            values[indexOf(position)]
+        } else {
+            defaultValue()
         }
     }
 
@@ -75,10 +91,10 @@ class Vector2IntMap(
         defaultValue: Int = DEFAULT_VALUE,
     ): Vector2IntMap {
         return Vector2IntMap(width, height) { (x, y) ->
-            if (x !in xRange || y !in yRange) {
-                defaultValue
-            } else {
+            if (x in xRange && y in yRange) {
                 this[x, y]
+            } else {
+                defaultValue
             }
         }
     }

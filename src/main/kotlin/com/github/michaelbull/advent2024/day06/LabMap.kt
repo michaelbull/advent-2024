@@ -39,10 +39,13 @@ data class LabMap(
 
             val nextPosition = position + direction
 
-            when (chars.getOrNull(nextPosition)) {
-                VACANT, GUARD -> position = nextPosition
-                OBSTRUCTION -> direction = direction.turn()
-                null -> return OpenPath(positions, steps)
+            if (nextPosition in chars) {
+                when (chars[nextPosition]) {
+                    VACANT, GUARD -> position = nextPosition
+                    OBSTRUCTION -> direction = direction.turn()
+                }
+            } else {
+                return OpenPath(positions, steps)
             }
         }
 

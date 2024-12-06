@@ -3,7 +3,6 @@ package com.github.michaelbull.advent2024.math
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
 
 class Vector2CharMapTest {
 
@@ -64,48 +63,94 @@ class Vector2CharMapTest {
     }
 
     @Test
-    fun `getOrNull within bounds`() {
+    fun `getOrDefault within bounds`() {
         val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
             if ((x % 2) == 0) 'a' else 'b'
         }
 
-        assertEquals('a', map.getOrNull(Vector2(4, 6)))
-        assertEquals('b', map.getOrNull(Vector2(3, 6)))
+        assertEquals('a', map.getOrDefault(Vector2(4, 6), Char.MIN_VALUE))
+        assertEquals('b', map.getOrDefault(Vector2(3, 6), Char.MIN_VALUE))
     }
 
     @Test
-    fun `getOrNull below x bounds`() {
+    fun `getOrDefault below x bounds`() {
         val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
             if ((x % 2) == 0) 'a' else 'b'
         }
 
-        assertNull(map.getOrNull(Vector2(-4, 6)))
+        assertEquals(Char.MIN_VALUE, map.getOrDefault(Vector2(-4, 6), Char.MIN_VALUE))
     }
 
     @Test
-    fun `getOrNull above x bounds`() {
+    fun `getOrDefault above x bounds`() {
         val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
             if ((x % 2) == 0) 'a' else 'b'
         }
 
-        assertNull(map.getOrNull(Vector2(22, 6)))
+        assertEquals(Char.MIN_VALUE, map.getOrDefault(Vector2(22, 6), Char.MIN_VALUE))
     }
 
     @Test
-    fun `getOrNull below y bounds`() {
+    fun `getOrDefault below y bounds`() {
         val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
             if ((x % 2) == 0) 'a' else 'b'
         }
 
-        assertNull(map.getOrNull(Vector2(4, -5)))
+        assertEquals(Char.MIN_VALUE, map.getOrDefault(Vector2(4, -5), Char.MIN_VALUE))
     }
 
     @Test
-    fun `getOrNull above y bounds`() {
+    fun `getOrDefault above y bounds`() {
         val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
             if ((x % 2) == 0) 'a' else 'b'
         }
 
-        assertNull(map.getOrNull(Vector2(4, 28)))
+        assertEquals(Char.MIN_VALUE, map.getOrDefault(Vector2(4, 28), Char.MIN_VALUE))
+    }
+
+    @Test
+    fun `getOrElse within bounds`() {
+        val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
+            if ((x % 2) == 0) 'a' else 'b'
+        }
+
+        assertEquals('a', map.getOrElse(Vector2(4, 6)) { Char.MIN_VALUE })
+        assertEquals('b', map.getOrElse(Vector2(3, 6)) { Char.MIN_VALUE })
+    }
+
+    @Test
+    fun `getOrElse below x bounds`() {
+        val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
+            if ((x % 2) == 0) 'a' else 'b'
+        }
+
+        assertEquals(Char.MIN_VALUE, map.getOrElse(Vector2(-4, 6)) { Char.MIN_VALUE })
+    }
+
+    @Test
+    fun `getOrElse above x bounds`() {
+        val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
+            if ((x % 2) == 0) 'a' else 'b'
+        }
+
+        assertEquals(Char.MIN_VALUE, map.getOrElse(Vector2(22, 6)) { Char.MIN_VALUE })
+    }
+
+    @Test
+    fun `getOrElse below y bounds`() {
+        val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
+            if ((x % 2) == 0) 'a' else 'b'
+        }
+
+        assertEquals(Char.MIN_VALUE, map.getOrElse(Vector2(4, -5)) { Char.MIN_VALUE })
+    }
+
+    @Test
+    fun `getOrElse above y bounds`() {
+        val map = Vector2CharMap(width = 10, height = 20) { (x, _) ->
+            if ((x % 2) == 0) 'a' else 'b'
+        }
+
+        assertEquals(Char.MIN_VALUE, map.getOrElse(Vector2(4, 28)) { Char.MIN_VALUE })
     }
 }

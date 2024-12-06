@@ -45,7 +45,7 @@ data class WordSearch(
         var current = position
 
         for (char in this) {
-            if (chars.getOrNull(current) == char) {
+            if (chars.getOrDefault(current, Char.MIN_VALUE) == char) {
                 current += direction
             } else {
                 return false

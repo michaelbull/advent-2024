@@ -4,7 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class Vector2BooleanMapTest {
@@ -66,48 +65,94 @@ class Vector2BooleanMapTest {
     }
 
     @Test
-    fun `getOrNull within bounds`() {
+    fun `getOrDefault within bounds`() {
         val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
-        assertEquals(true, map.getOrNull(Vector2(4, 6)))
-        assertEquals(false, map.getOrNull(Vector2(3, 6)))
+        assertTrue(map.getOrDefault(Vector2(4, 6), false))
+        assertFalse(map.getOrDefault(Vector2(3, 6), true))
     }
 
     @Test
-    fun `getOrNull below x bounds`() {
+    fun `getOrDefault below x bounds`() {
         val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
-        assertNull(map.getOrNull(Vector2(-4, 6)))
+        assertFalse(map.getOrDefault(Vector2(-4, 6), false))
     }
 
     @Test
-    fun `getOrNull above x bounds`() {
+    fun `getOrDefault above x bounds`() {
         val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
-        assertNull(map.getOrNull(Vector2(22, 6)))
+        assertFalse(map.getOrDefault(Vector2(22, 6), false))
     }
 
     @Test
-    fun `getOrNull below y bounds`() {
+    fun `getOrDefault below y bounds`() {
         val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
-        assertNull(map.getOrNull(Vector2(4, -5)))
+        assertFalse(map.getOrDefault(Vector2(4, -5), false))
     }
 
     @Test
-    fun `getOrNull above y bounds`() {
+    fun `getOrDefault above y bounds`() {
         val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
-        assertNull(map.getOrNull(Vector2(4, 28)))
+        assertFalse(map.getOrDefault(Vector2(4, 28), false))
+    }
+
+    @Test
+    fun `getOrElse within bounds`() {
+        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+            (x % 2) == 0
+        }
+
+        assertTrue(map.getOrElse(Vector2(4, 6)) { false })
+        assertFalse(map.getOrElse(Vector2(3, 6)) { true })
+    }
+
+    @Test
+    fun `getOrElse below x bounds`() {
+        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+            (x % 2) == 0
+        }
+
+        assertFalse(map.getOrElse(Vector2(-4, 6)) { false })
+    }
+
+    @Test
+    fun `getOrElse above x bounds`() {
+        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+            (x % 2) == 0
+        }
+
+        assertFalse(map.getOrElse(Vector2(22, 6)) { false })
+    }
+
+    @Test
+    fun `getOrElse below y bounds`() {
+        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+            (x % 2) == 0
+        }
+
+        assertFalse(map.getOrElse(Vector2(4, -5)) { false })
+    }
+
+    @Test
+    fun `getOrElse above y bounds`() {
+        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+            (x % 2) == 0
+        }
+
+        assertFalse(map.getOrElse(Vector2(4, 28)) { false })
     }
 }
