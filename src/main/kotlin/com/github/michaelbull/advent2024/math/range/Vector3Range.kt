@@ -1,9 +1,14 @@
-package com.github.michaelbull.advent2024.math
+package com.github.michaelbull.advent2024.math.range
+
+import com.github.michaelbull.advent2024.math.Vector3
+import com.github.michaelbull.advent2024.math.Vector3.Companion.MAX_VALUE
+import com.github.michaelbull.advent2024.math.Vector3.Companion.MIN_VALUE
+import com.github.michaelbull.advent2024.math.Vector3.Companion.UP
 
 class Vector3Range(
     start: Vector3,
     endInclusive: Vector3,
-) : Vector3Progression(start, endInclusive, Vector3.UP), ClosedRange<Vector3> {
+) : Vector3Progression(start, endInclusive, UP), ClosedRange<Vector3> {
 
     override val start: Vector3 get() = first
     override val endInclusive: Vector3 get() = last
@@ -48,6 +53,6 @@ class Vector3Range(
     }
 
     companion object {
-        val EMPTY = Vector3Range(Vector3.MAX_VALUE, Vector3.MIN_VALUE)
+        val EMPTY = Vector3Range(MAX_VALUE, MIN_VALUE)
     }
 }

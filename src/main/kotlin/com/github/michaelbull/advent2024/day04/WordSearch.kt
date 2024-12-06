@@ -11,20 +11,20 @@ import com.github.michaelbull.advent2024.math.Vector2.Companion.SOUTH
 import com.github.michaelbull.advent2024.math.Vector2.Companion.SOUTH_EAST
 import com.github.michaelbull.advent2024.math.Vector2.Companion.SOUTH_WEST
 import com.github.michaelbull.advent2024.math.Vector2.Companion.WEST
-import com.github.michaelbull.advent2024.math.Vector2CharMap
+import com.github.michaelbull.advent2024.math.grid.CharGrid
 
 data class WordSearch(
-    val chars: Vector2CharMap,
+    val grid: CharGrid,
 ) {
 
     fun count(word: String): Int {
-        return chars.positions().sumOf { position ->
+        return grid.positions().sumOf { position ->
             word countStartingFrom position
         }
     }
 
     fun countCrosses(word: String): Int {
-        return chars.positions().sumOf { position ->
+        return grid.positions().sumOf { position ->
             word countCrossingFrom position
         }
     }
@@ -45,7 +45,7 @@ data class WordSearch(
         var current = position
 
         for (char in this) {
-            if (chars.getOrDefault(current, Char.MIN_VALUE) == char) {
+            if (grid.getOrDefault(current, Char.MIN_VALUE) == char) {
                 current += direction
             } else {
                 return false

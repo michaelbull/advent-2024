@@ -1,4 +1,4 @@
-package com.github.michaelbull.advent2024.math
+package com.github.michaelbull.advent2024.math.range
 
 operator fun Int.rem(progression: IntProgression): Int {
     val first = progression.first

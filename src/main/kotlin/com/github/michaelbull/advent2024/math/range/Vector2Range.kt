@@ -1,9 +1,12 @@
-package com.github.michaelbull.advent2024.math
+package com.github.michaelbull.advent2024.math.range
+
+import com.github.michaelbull.advent2024.math.Vector2
+import com.github.michaelbull.advent2024.math.Vector2.Companion.UP
 
 class Vector2Range(
     start: Vector2,
     endInclusive: Vector2,
-) : Vector2Progression(start, endInclusive, Vector2.UP), ClosedRange<Vector2> {
+) : Vector2Progression(start, endInclusive, UP), ClosedRange<Vector2> {
 
     override val start: Vector2 get() = first
     override val endInclusive: Vector2 get() = last

@@ -1,5 +1,6 @@
-package com.github.michaelbull.advent2024.math
+package com.github.michaelbull.advent2024.math.range
 
+import com.github.michaelbull.advent2024.math.Vector2
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

@@ -5,15 +5,15 @@ import com.github.michaelbull.advent2024.math.Vector2.Companion.EAST
 import com.github.michaelbull.advent2024.math.Vector2.Companion.NORTH
 import com.github.michaelbull.advent2024.math.Vector2.Companion.SOUTH
 import com.github.michaelbull.advent2024.math.Vector2.Companion.WEST
-import com.github.michaelbull.advent2024.math.Vector2CharMap
-import com.github.michaelbull.advent2024.math.toVector2CharMap
+import com.github.michaelbull.advent2024.math.grid.CharGrid
+import com.github.michaelbull.advent2024.math.grid.toCharGrid
 
 fun Sequence<String>.toLabMap(): LabMap {
-    return LabMap(toVector2CharMap())
+    return LabMap(toCharGrid())
 }
 
 data class LabMap(
-    val chars: Vector2CharMap,
+    val grid: CharGrid,
 ) {
 
     fun pathLength(): Int {
@@ -39,8 +39,8 @@ data class LabMap(
 
             val nextPosition = position + direction
 
-            if (nextPosition in chars) {
-                when (chars[nextPosition]) {
+            if (nextPosition in grid) {
+                when (grid[nextPosition]) {
                     VACANT, GUARD -> position = nextPosition
                     OBSTRUCTION -> direction = direction.turn()
                 }
@@ -53,25 +53,25 @@ data class LabMap(
     }
 
     private fun withObstruction(position: Vector2): LabMap {
-        val updated = chars.copy().apply {
+        val updated = grid.copy().apply {
             this[position] = OBSTRUCTION
         }
 
         return copy(
-            chars = updated
+            grid = updated
         )
     }
 
     private fun guardPosition(): Vector2? {
-        return chars.positions().find(::isGuardAt)
+        return grid.positions().find(::isGuardAt)
     }
 
     private fun isGuardAt(position: Vector2): Boolean {
-        return chars[position] == GUARD
+        return grid[position] == GUARD
     }
 
     private fun isVacantAt(position: Vector2): Boolean {
-        return chars[position] == VACANT
+        return grid[position] == VACANT
     }
 
     private fun Vector2.turn(): Vector2 {

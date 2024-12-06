@@ -1,16 +1,17 @@
-package com.github.michaelbull.advent2024.math
+package com.github.michaelbull.advent2024.math.grid
 
+import com.github.michaelbull.advent2024.math.Vector2
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class Vector2BooleanMapTest {
+class BooleanGridTest {
 
     @Test
     fun `get within bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 10) { (x, y) ->
+        val map = BooleanGrid(width = 10, height = 10) { (x, y) ->
             x == 3 && y == 6
         }
 
@@ -22,7 +23,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `get below x bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20)
+        val map = BooleanGrid(width = 10, height = 20)
 
         val exception = assertFailsWith<IllegalArgumentException> {
             map[Vector2(-5, 0)]
@@ -33,7 +34,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `get above x bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20)
+        val map = BooleanGrid(width = 10, height = 20)
 
         val exception = assertFailsWith<IllegalArgumentException> {
             map[Vector2(15, 0)]
@@ -44,7 +45,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `get below y bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20)
+        val map = BooleanGrid(width = 10, height = 20)
 
         val exception = assertFailsWith<IllegalArgumentException> {
             map[Vector2(0, -7)]
@@ -55,7 +56,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `get above y bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20)
+        val map = BooleanGrid(width = 10, height = 20)
 
         val exception = assertFailsWith<IllegalArgumentException> {
             map[Vector2(0, 23)]
@@ -66,7 +67,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrDefault within bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -76,7 +77,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrDefault below x bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -85,7 +86,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrDefault above x bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -94,7 +95,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrDefault below y bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -103,7 +104,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrDefault above y bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -112,7 +113,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrElse within bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -122,7 +123,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrElse below x bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -131,7 +132,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrElse above x bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -140,7 +141,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrElse below y bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 
@@ -149,7 +150,7 @@ class Vector2BooleanMapTest {
 
     @Test
     fun `getOrElse above y bounds`() {
-        val map = Vector2BooleanMap(width = 10, height = 20) { (x, _) ->
+        val map = BooleanGrid(width = 10, height = 20) { (x, _) ->
             (x % 2) == 0
         }
 

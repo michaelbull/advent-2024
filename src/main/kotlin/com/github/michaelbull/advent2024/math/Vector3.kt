@@ -1,5 +1,7 @@
 package com.github.michaelbull.advent2024.math
 
+import com.github.michaelbull.advent2024.math.range.Vector3Range
+import com.github.michaelbull.advent2024.math.range.rem
 import kotlin.math.abs
 
 fun Triple<Int, Int, Int>.toVector3(): Vector3 {

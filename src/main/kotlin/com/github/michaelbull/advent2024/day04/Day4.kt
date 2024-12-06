@@ -1,12 +1,12 @@
 package com.github.michaelbull.advent2024.day04
 
 import com.github.michaelbull.advent2024.Puzzle
-import com.github.michaelbull.advent2024.math.toVector2CharMap
+import com.github.michaelbull.advent2024.math.grid.toCharGrid
 
 object Day4 : Puzzle<WordSearch, Int>(day = 4) {
 
     override fun parse(lines: Sequence<String>): WordSearch {
-        return WordSearch(lines.toVector2CharMap())
+        return WordSearch(lines.toCharGrid())
     }
 
     override fun solutions() = listOf(

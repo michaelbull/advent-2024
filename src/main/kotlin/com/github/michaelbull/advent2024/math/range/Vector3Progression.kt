@@ -1,7 +1,12 @@
-package com.github.michaelbull.advent2024.math
+package com.github.michaelbull.advent2024.math.range
+
+import com.github.michaelbull.advent2024.math.Vector3
+import com.github.michaelbull.advent2024.math.Vector3.Companion.DIMENSIONS
+import com.github.michaelbull.advent2024.math.Vector3.Companion.DOWN
+import com.github.michaelbull.advent2024.math.Vector3.Companion.ZERO
 
 infix fun Vector3.downTo(to: Vector3): Vector3Progression {
-    return Vector3Progression.fromClosedRange(this, to, Vector3.DOWN)
+    return Vector3Progression.fromClosedRange(this, to, DOWN)
 }
 
 infix fun Vector3Progression.step(step: Vector3): Vector3Progression {
@@ -44,7 +49,7 @@ open class Vector3Progression internal constructor(
     private val isEmpty = isProgressionEmpty(start, endInclusive, step)
 
     init {
-        require(step != Vector3.ZERO) { "Step must be non-zero." }
+        require(step != ZERO) { "Step must be non-zero." }
     }
 
     override fun iterator(): Iterator<Vector3> {
@@ -115,7 +120,7 @@ open class Vector3Progression internal constructor(
 }
 
 private fun isProgressionEmpty(start: Vector3, endInclusive: Vector3, step: Vector3): Boolean {
-    return Vector3.DIMENSIONS.any { dimension ->
+    return DIMENSIONS.any { dimension ->
         val startValue = dimension(start)
         val endValue = dimension(endInclusive)
         val stepValue = dimension(step)

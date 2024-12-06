@@ -1,5 +1,6 @@
-package com.github.michaelbull.advent2024.math
+package com.github.michaelbull.advent2024.math.range
 
+import com.github.michaelbull.advent2024.math.Vector3
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

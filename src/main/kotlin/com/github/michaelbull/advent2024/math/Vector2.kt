@@ -1,5 +1,7 @@
 package com.github.michaelbull.advent2024.math
 
+import com.github.michaelbull.advent2024.math.range.Vector2Range
+import com.github.michaelbull.advent2024.math.range.rem
 import kotlin.math.abs
 
 fun Pair<Int, Int>.toVector2(): Vector2 {
