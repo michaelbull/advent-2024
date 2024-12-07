@@ -12,24 +12,20 @@ fun Sequence<String>.toLabMap(): LabMap {
     return LabMap(toCharGrid())
 }
 
-data class LabMap(
-    val grid: CharGrid,
-) {
+class LabMap(private val grid: CharGrid) {
 
-    fun pathLength(): Int {
-        return guardPath().positions.size
+    fun guardPathLength(): Int {
+        return path().positions.size
     }
 
-    fun obstructionLoopPositions(): Int {
-        val vacantPositions = guardPath().positions.filter(::isVacantAt)
-
-        return vacantPositions.count { position ->
-            withObstruction(position).guardPath() is ClosedPath
-        }
+    fun guardPathObstructionLoops(): Int {
+        return path().positions
+            .filter(::isVacantAt)
+            .count(::pathLoopsWithObstruction)
     }
 
-    private fun guardPath(): Path {
-        var position = guardPosition() ?: return EmptyPath
+    private fun path(obstruction: Vector2? = null): Path {
+        var position = findGuardPosition() ?: error("guard not found")
         var direction = SOUTH
         val positions = mutableSetOf<Vector2>()
         val steps = mutableSetOf<Step>()
@@ -39,46 +35,42 @@ data class LabMap(
 
             val nextPosition = position + direction
 
-            if (nextPosition in grid) {
-                when (grid[nextPosition]) {
-                    VACANT, GUARD -> position = nextPosition
-                    OBSTRUCTION -> direction = direction.turn()
-                }
-            } else {
-                return OpenPath(positions, steps)
+            when {
+                nextPosition !in grid -> return TerminalPath(positions)
+                nextPosition == obstruction -> direction = direction.turn()
+                isObstructionAt(nextPosition) -> direction = direction.turn()
+                else -> position = nextPosition
             }
         }
 
-        return ClosedPath(positions, steps)
+        return LoopingPath(positions)
     }
 
-    private fun withObstruction(position: Vector2): LabMap {
-        val updated = grid.copy().apply {
-            this[position] = OBSTRUCTION
-        }
-
-        return copy(
-            grid = updated
-        )
+    private fun pathLoopsWithObstruction(obstruction: Vector2): Boolean {
+        return path(obstruction) is LoopingPath
     }
 
-    private fun guardPosition(): Vector2? {
+    private fun findGuardPosition(): Vector2? {
         return grid.positions().find(::isGuardAt)
-    }
-
-    private fun isGuardAt(position: Vector2): Boolean {
-        return grid[position] == GUARD
     }
 
     private fun isVacantAt(position: Vector2): Boolean {
         return grid[position] == VACANT
     }
 
+    private fun isGuardAt(position: Vector2): Boolean {
+        return grid[position] == GUARD
+    }
+
+    private fun isObstructionAt(position: Vector2): Boolean {
+        return grid[position] == OBSTRUCTION
+    }
+
     private fun Vector2.turn(): Vector2 {
         return when (this) {
-            SOUTH -> EAST
-            EAST -> NORTH
             NORTH -> WEST
+            EAST -> NORTH
+            SOUTH -> EAST
             WEST -> SOUTH
             else -> throw IllegalArgumentException()
         }

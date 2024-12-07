@@ -14,11 +14,11 @@ object Day6 : Puzzle<LabMap, Int>(day = 6) {
     )
 
     fun part1(input: LabMap): Int {
-        return input.pathLength()
+        return input.guardPathLength()
     }
 
     fun part2(input: LabMap): Int {
-        return input.obstructionLoopPositions()
+        return input.guardPathObstructionLoops()
     }
 }
 
