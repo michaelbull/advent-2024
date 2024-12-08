@@ -66,6 +66,16 @@ interface Grid<T : Any> : Iterable<Pair<Vector2, T>> {
         return Iterable(::positionsIterator)
     }
 
+    fun valuesIterator() = iterator {
+        for (position in positionsIterator()) {
+            yield(get(position))
+        }
+    }
+
+    fun values(): Iterable<T> {
+        return Iterable(::valuesIterator)
+    }
+
     override fun iterator(): Iterator<Pair<Vector2, T>> {
         return iterator {
             for (x in xRange) {
