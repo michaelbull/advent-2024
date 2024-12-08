@@ -12,8 +12,8 @@ fun String.toEquation(): Equation {
 }
 
 fun Sequence<Equation>.totalCalibrationResult(vararg operators: Operator): Long {
-    return filter { it.toBoolean(operators.toList()) }
-        .sumOf(Equation::testValue)
+    val operators = operators.toList()
+    return filter { it.isValid(operators) }.sumOf(Equation::testValue)
 }
 
 data class Equation(
@@ -21,24 +21,22 @@ data class Equation(
     val values: List<Long>,
 ) {
 
-    fun toBoolean(operators: List<Operator>): Boolean {
-        return operators.any(values)
+    fun isValid(operators: List<Operator>): Boolean {
+        return isValid(operators, values.first(), 0)
     }
 
-    private fun List<Operator>.any(values: List<Long>): Boolean {
+    private fun isValid(operators: List<Operator>, currentResult: Long, index: Int): Boolean {
+        fun isNextValid(operator: Operator): Boolean {
+            val nextIndex = index + 1
+            val nextValue = values[nextIndex]
+            val nextResult = operator(currentResult, nextValue)
+            return isValid(operators, nextResult, nextIndex)
+        }
+
         return when {
-            values.first() > testValue -> false
-            values.drop(1).isEmpty() -> values.first() == testValue
-            else -> any { operator -> any(operator(values)) }
+            currentResult > testValue -> false
+            index == values.lastIndex -> currentResult == testValue
+            else -> operators.any(::isNextValid)
         }
     }
-}
-
-private operator fun Operator.invoke(values: List<Long>): List<Long> {
-    val value = this(values.first(), values.second())
-    return listOf(value) + values.drop(2)
-}
-
-private fun <T> List<T>.second(): T {
-    return if (isNotEmpty()) this[1] else throw NoSuchElementException("List is empty.")
 }
