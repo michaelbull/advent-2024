@@ -18,11 +18,12 @@ class BooleanGrid(
     private val values = BitSet(width * height)
 
     init {
-        for (x in xRange) {
-            for (y in yRange) {
-                val position = Vector2(x, y)
-                set(position, init(position))
-            }
+        require(width > 0)
+        require(height > 0)
+
+        forEachPosition { x, y ->
+            val position = Vector2(x, y)
+            set(position, init(position))
         }
     }
 
@@ -93,10 +94,8 @@ class BooleanGrid(
     }
 
     fun positionsIterator() = iterator {
-        for (x in xRange) {
-            for (y in yRange) {
-                yield(Vector2(x, y))
-            }
+        forEachPosition { x, y ->
+            yield(Vector2(x, y))
         }
     }
 
@@ -104,10 +103,8 @@ class BooleanGrid(
         return Iterable(::positionsIterator)
     }
 
-    fun valuesIterator() = iterator {
-        for (position in positionsIterator()) {
-            yield(get(position))
-        }
+    fun valuesIterator(): BooleanIterator {
+        return ValueIterator()
     }
 
     fun values(): Iterable<Boolean> {
@@ -116,12 +113,18 @@ class BooleanGrid(
 
     override fun iterator(): Iterator<Pair<Vector2, Boolean>> {
         return iterator {
-            for (x in xRange) {
-                for (y in yRange) {
-                    val position = Vector2(x, y)
-                    val value = get(position)
-                    yield(position to value)
-                }
+            forEachPosition { x, y ->
+                val position = Vector2(x, y)
+                val value = get(position)
+                yield(position to value)
+            }
+        }
+    }
+
+    private inline fun forEachPosition(action: (Int, Int) -> Unit) {
+        for (x in xRange) {
+            for (y in yRange) {
+                action(x, y)
             }
         }
     }
@@ -138,6 +141,44 @@ class BooleanGrid(
     private fun requireInBounds(x: Int, y: Int) {
         require(x in xRange) { "x must be in $xRange, but was $x" }
         require(y in yRange) { "y must be in $yRange, but was $y" }
+    }
+
+    private inner class ValueIterator : BooleanIterator() {
+        private var hasNext = true
+        private var x = 0
+        private var y = 0
+
+        override fun hasNext(): Boolean {
+            return hasNext
+        }
+
+        override fun nextBoolean(): Boolean {
+            val value = get(x, y)
+
+            if (x == xRange.last && y == yRange.last) {
+                if (!hasNext) throw NoSuchElementException()
+                hasNext = false
+            } else {
+                step()
+            }
+
+            return value
+        }
+
+        private fun step() {
+            when {
+                x != xRange.last -> {
+                    x++
+                }
+
+                y != yRange.last -> {
+                    y++
+                    x = 0
+                }
+
+                else -> throw NoSuchElementException()
+            }
+        }
     }
 
     private companion object {

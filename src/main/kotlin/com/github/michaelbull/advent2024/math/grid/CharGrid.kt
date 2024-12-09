@@ -29,6 +29,11 @@ class CharGrid(
     val first = Vector2(xRange.first, yRange.first)
     val last = Vector2(xRange.last, yRange.last)
 
+    init {
+        require(width > 0)
+        require(height > 0)
+    }
+
     private val values = CharArray(width * height) { position ->
         val x = position % width
         val y = position / width
@@ -102,10 +107,8 @@ class CharGrid(
     }
 
     fun positionsIterator() = iterator {
-        for (x in xRange) {
-            for (y in yRange) {
-                yield(Vector2(x, y))
-            }
+        forEachPosition { x, y ->
+            yield(Vector2(x, y))
         }
     }
 
@@ -113,10 +116,8 @@ class CharGrid(
         return Iterable(::positionsIterator)
     }
 
-    fun valuesIterator() = iterator {
-        for (position in positionsIterator()) {
-            yield(get(position))
-        }
+    fun valuesIterator(): CharIterator {
+        return ValueIterator()
     }
 
     fun values(): Iterable<Char> {
@@ -125,12 +126,10 @@ class CharGrid(
 
     override fun iterator(): Iterator<Pair<Vector2, Char>> {
         return iterator {
-            for (x in xRange) {
-                for (y in yRange) {
-                    val position = Vector2(x, y)
-                    val value = get(position)
-                    yield(position to value)
-                }
+            forEachPosition { x, y ->
+                val position = Vector2(x, y)
+                val value = get(position)
+                yield(position to value)
             }
         }
     }
@@ -147,6 +146,14 @@ class CharGrid(
         return values.contentHashCode()
     }
 
+    private inline fun forEachPosition(action: (Int, Int) -> Unit) {
+        for (x in xRange) {
+            for (y in yRange) {
+                action(x, y)
+            }
+        }
+    }
+
     private fun indexOf(position: Vector2): Int {
         return indexOf(position.x, position.y)
     }
@@ -159,6 +166,44 @@ class CharGrid(
     private fun requireInBounds(x: Int, y: Int) {
         require(x in xRange) { "x must be in $xRange, but was $x" }
         require(y in yRange) { "y must be in $yRange, but was $y" }
+    }
+
+    private inner class ValueIterator : CharIterator() {
+        private var hasNext = true
+        private var x = 0
+        private var y = 0
+
+        override fun hasNext(): Boolean {
+            return hasNext
+        }
+
+        override fun nextChar(): Char {
+            val value = get(x, y)
+
+            if (x == xRange.last && y == yRange.last) {
+                if (!hasNext) throw NoSuchElementException()
+                hasNext = false
+            } else {
+                step()
+            }
+
+            return value
+        }
+
+        private fun step() {
+            when {
+                x != xRange.last -> {
+                    x++
+                }
+
+                y != yRange.last -> {
+                    y++
+                    x = 0
+                }
+
+                else -> throw NoSuchElementException()
+            }
+        }
     }
 
     private companion object {
