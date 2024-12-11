@@ -30,19 +30,17 @@ class TopographicMap(
     }
 
     private fun bfs(trailhead: Vector2) = sequence {
-        val queue = ArrayDeque<Vector2>().apply {
-            add(trailhead)
-        }
+        val queue = ArrayDeque<Vector2>()
+
+        queue += trailhead
 
         while (queue.isNotEmpty()) {
             val position = queue.removeFirst()
 
             if (isMaxHeight(position)) {
                 yield(position)
-            }
-
-            for (step in position.uphillSteps()) {
-                queue += step
+            } else {
+                queue += position.uphillSteps()
             }
         }
     }
