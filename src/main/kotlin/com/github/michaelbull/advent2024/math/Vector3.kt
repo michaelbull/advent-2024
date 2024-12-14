@@ -3,6 +3,7 @@ package com.github.michaelbull.advent2024.math
 import com.github.michaelbull.advent2024.math.range.Vector3Range
 import com.github.michaelbull.advent2024.math.range.rem
 import kotlin.math.abs
+import kotlin.math.sign
 
 fun Triple<Int, Int, Int>.toVector3(): Vector3 {
     return Vector3(this)
@@ -143,19 +144,27 @@ data class Vector3(
         )
     }
 
+    fun sign(): Vector3 {
+        return copy(
+            x = this.x.sign,
+            y = this.y.sign,
+            z = this.z.sign,
+        )
+    }
+
     fun coerceAtLeast(minimumValue: Vector3): Vector3 {
         return copy(
-            x = x.coerceAtLeast(minimumValue.x),
-            y = y.coerceAtLeast(minimumValue.y),
-            z = z.coerceAtLeast(minimumValue.z),
+            x = this.x.coerceAtLeast(minimumValue.x),
+            y = this.y.coerceAtLeast(minimumValue.y),
+            z = this.z.coerceAtLeast(minimumValue.z),
         )
     }
 
     fun coerceAtMost(maximumValue: Vector3): Vector3 {
         return copy(
-            x = x.coerceAtMost(maximumValue.x),
-            y = y.coerceAtMost(maximumValue.y),
-            z = z.coerceAtMost(maximumValue.z),
+            x = this.x.coerceAtMost(maximumValue.x),
+            y = this.y.coerceAtMost(maximumValue.y),
+            z = this.z.coerceAtMost(maximumValue.z),
         )
     }
 

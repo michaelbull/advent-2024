@@ -3,6 +3,7 @@ package com.github.michaelbull.advent2024.math
 import com.github.michaelbull.advent2024.math.range.Vector2Range
 import com.github.michaelbull.advent2024.math.range.rem
 import kotlin.math.abs
+import kotlin.math.sign
 
 fun Pair<Int, Int>.toVector2(): Vector2 {
     return Vector2(this)
@@ -125,17 +126,24 @@ data class Vector2(
         )
     }
 
+    fun sign(): Vector2 {
+        return copy(
+            x = this.x.sign,
+            y = this.y.sign,
+        )
+    }
+
     fun coerceAtLeast(minimumValue: Vector2): Vector2 {
         return copy(
-            x = x.coerceAtLeast(minimumValue.x),
-            y = y.coerceAtLeast(minimumValue.y),
+            x = this.x.coerceAtLeast(minimumValue.x),
+            y = this.y.coerceAtLeast(minimumValue.y),
         )
     }
 
     fun coerceAtMost(maximumValue: Vector2): Vector2 {
         return copy(
-            x = x.coerceAtMost(maximumValue.x),
-            y = y.coerceAtMost(maximumValue.y),
+            x = this.x.coerceAtMost(maximumValue.x),
+            y = this.y.coerceAtMost(maximumValue.y),
         )
     }
 
