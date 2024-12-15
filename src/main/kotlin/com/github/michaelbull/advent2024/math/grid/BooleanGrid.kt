@@ -121,6 +121,24 @@ class BooleanGrid(
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        return if (other is BooleanGrid) {
+            values == other.values
+        } else {
+            false
+        }
+    }
+
+    override fun hashCode(): Int {
+        return values.hashCode()
+    }
+
+    override fun toString(): String {
+        return yRange.joinToString(separator = "\n") { y ->
+            xRange.map { x -> this[x, y] }.joinToString(separator = "")
+        }
+    }
+
     private inline fun forEachPosition(action: (Int, Int) -> Unit) {
         for (x in xRange) {
             for (y in yRange) {

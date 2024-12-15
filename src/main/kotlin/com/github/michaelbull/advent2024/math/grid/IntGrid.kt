@@ -146,6 +146,12 @@ class IntGrid(
         return values.contentHashCode()
     }
 
+    override fun toString(): String {
+        return yRange.joinToString(separator = "\n") { y ->
+            xRange.map { x -> this[x, y] }.joinToString(separator = "")
+        }
+    }
+
     private inline fun forEachPosition(action: (Int, Int) -> Unit) {
         for (x in xRange) {
             for (y in yRange) {
