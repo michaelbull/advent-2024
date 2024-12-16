@@ -61,8 +61,8 @@ class ReindeerMaze(
                 val alt = reindeer.score + reindeer.scoreToMoveIn(neighbour.direction)
                 val score = scores.getOrDefault(neighbour, Int.MAX_VALUE)
 
-                if (alt < score) {
-                    scores[reindeer.step] = alt
+                if (alt <= score) {
+                    scores[neighbour] = alt
 
                     queue += Reindeer(
                         step = neighbour,
