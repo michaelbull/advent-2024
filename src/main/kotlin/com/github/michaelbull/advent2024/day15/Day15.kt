@@ -15,13 +15,13 @@ object Day15 : Puzzle<Gps, Int>(day = 15) {
 
     fun part1(input: Gps): Int {
         input.simulate()
-        return input.sumGpsCoordinates('O')
+        return input.sumCoordinates('O')
     }
 
     fun part2(input: Gps): Int {
         val widened = input.widenWarehouse()
         widened.simulate()
-        return widened.sumGpsCoordinates('[')
+        return widened.sumCoordinates('[')
     }
 }
 

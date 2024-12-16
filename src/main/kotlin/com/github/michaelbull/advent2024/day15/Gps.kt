@@ -5,7 +5,6 @@ import com.github.michaelbull.advent2024.math.Vector2.Companion.EAST
 import com.github.michaelbull.advent2024.math.Vector2.Companion.NORTH
 import com.github.michaelbull.advent2024.math.Vector2.Companion.SOUTH
 import com.github.michaelbull.advent2024.math.Vector2.Companion.WEST
-import com.github.michaelbull.advent2024.math.distance.manhattanDistanceTo
 import com.github.michaelbull.advent2024.math.grid.CharGrid
 import com.github.michaelbull.advent2024.math.grid.toCharGrid
 
@@ -57,36 +56,35 @@ data class Gps(
         return copy(warehouse = widened)
     }
 
-    fun sumGpsCoordinates(box: Char): Int {
+    fun sumCoordinates(box: Char): Int {
         return warehouse.sumOf { (position, char) ->
             if (char == box) {
-                position.gpsCoordinate()
+                position.coordinate()
             } else {
                 0
             }
         }
     }
 
-    private fun travel() = sequence {
-        var robot = robotPosition()
-
-        for (movement in movements) {
+    private fun travel() = sequence<Pair<Vector2, Char>> {
+        movements.fold(robotPosition()) { robot, movement ->
             val path = bfs(robot, movement)
+            val noWalls = path.none { (_, next) -> isWallAt(next) }
 
-            if (path.none { it intersectsWallWith movement }) {
-                val positions = path.sortedByDescending(robot::manhattanDistanceTo)
-
-                for (position in positions) {
-                    yield(position + movement to warehouse[position])
-                    yield(position to EMPTY)
+            if (noWalls) {
+                for ((curr, next) in path.toList().asReversed()) {
+                    yield(next to warehouse[curr])
+                    yield(curr to EMPTY)
                 }
 
-                robot += movement
+                robot + movement
+            } else {
+                robot
             }
         }
     }
 
-    private fun bfs(start: Vector2, movement: Vector2) = sequence {
+    private fun bfs(start: Vector2, movement: Vector2) = sequence<Pair<Vector2, Vector2>> {
         val visited = mutableSetOf<Vector2>()
         val queue = ArrayDeque<Vector2>()
 
@@ -94,22 +92,31 @@ data class Gps(
         queue += start
 
         while (queue.isNotEmpty()) {
-            val position = queue.removeFirst()
-            yield(position)
+            val curr = queue.removeFirst()
+            val next = curr + movement
 
-            val next = position + movement
+            yield(curr to next)
+
             val adjacent = next.adjacent()
             queue += adjacent.filter(visited::add)
         }
     }
 
     private fun robotPosition(): Vector2 {
-        return warehouse.positions().first {
-            warehouse[it] == ROBOT
+        return warehouse.positions().first { position ->
+            isRobotAt(position)
         }
     }
 
-    private fun Vector2.gpsCoordinate(): Int {
+    private fun isRobotAt(position: Vector2): Boolean {
+        return warehouse[position] == ROBOT
+    }
+
+    private fun isWallAt(position: Vector2): Boolean {
+        return warehouse[position] == WALL
+    }
+
+    private fun Vector2.coordinate(): Int {
         return x + (y * 100)
     }
 
@@ -121,10 +128,6 @@ data class Gps(
             BOX_RIGHT -> setOf(this, this + WEST)
             else -> throw IllegalStateException()
         }
-    }
-
-    private infix fun Vector2.intersectsWallWith(movement: Vector2): Boolean {
-        return warehouse[this + movement] == WALL
     }
 
     private fun Vector2.widen(): Pair<Vector2, Vector2> {
