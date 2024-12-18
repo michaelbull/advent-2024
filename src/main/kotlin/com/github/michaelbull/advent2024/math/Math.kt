@@ -2,6 +2,10 @@ package com.github.michaelbull.advent2024.math
 
 import kotlin.math.abs
 
+fun safeMidpoint(left: Int, right: Int): Int {
+    return (left and right) + ((left xor right) shr 1)
+}
+
 /* https://en.wikipedia.org/wiki/Greatest_common_divisor */
 
 tailrec fun greatestCommonDivisor(a: Long, b: Long): Long {
