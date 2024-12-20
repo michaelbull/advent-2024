@@ -1,5 +1,9 @@
 package com.github.michaelbull.advent2024.math.range
 
+fun Int.symmetricRange(): IntRange {
+    return -this..this
+}
+
 operator fun Int.rem(progression: IntProgression): Int {
     val first = progression.first
     val last = progression.last
