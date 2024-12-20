@@ -1,10 +1,11 @@
 package com.github.michaelbull.advent2024.day15
 
+import com.github.michaelbull.advent2024.math.Direction
+import com.github.michaelbull.advent2024.math.Direction.EAST
+import com.github.michaelbull.advent2024.math.Direction.NORTH
+import com.github.michaelbull.advent2024.math.Direction.SOUTH
+import com.github.michaelbull.advent2024.math.Direction.WEST
 import com.github.michaelbull.advent2024.math.Vector2
-import com.github.michaelbull.advent2024.math.Vector2.Companion.EAST
-import com.github.michaelbull.advent2024.math.Vector2.Companion.NORTH
-import com.github.michaelbull.advent2024.math.Vector2.Companion.SOUTH
-import com.github.michaelbull.advent2024.math.Vector2.Companion.WEST
 import com.github.michaelbull.advent2024.math.grid.CharGrid
 import com.github.michaelbull.advent2024.math.grid.toCharGrid
 
@@ -16,13 +17,13 @@ fun Sequence<String>.toGps(): Gps {
         .toCharGrid()
 
     val movements = iterator.asSequence()
-        .flatMap { line -> line.map(Char::toVector2) }
+        .flatMap { line -> line.map { it.toDirection().translation } }
         .toList()
 
     return Gps(warehouse, movements)
 }
 
-private fun Char.toVector2(): Vector2 {
+private fun Char.toDirection(): Direction {
     return when (this) {
         '^' -> SOUTH
         '>' -> EAST
@@ -124,8 +125,8 @@ data class Gps(
         return when (warehouse[this]) {
             EMPTY, WALL -> emptySet()
             BOX -> setOf(this)
-            BOX_LEFT -> setOf(this, this + EAST)
-            BOX_RIGHT -> setOf(this, this + WEST)
+            BOX_LEFT -> setOf(this, this + EAST.translation)
+            BOX_RIGHT -> setOf(this, this + WEST.translation)
             else -> throw IllegalStateException()
         }
     }

@@ -1,7 +1,7 @@
 package com.github.michaelbull.advent2024.day18
 
 import com.github.michaelbull.advent2024.math.Vector2
-import com.github.michaelbull.advent2024.math.Vector2.Companion.CARDINAL_DIRECTIONS
+import com.github.michaelbull.advent2024.math.orthogonals
 import com.github.michaelbull.advent2024.math.safeMidpoint
 import java.util.PriorityQueue
 
@@ -43,7 +43,7 @@ class MemorySpace(
                 yield(distances[position]!!)
             }
 
-            val neighbours = position.adjacent().filter {
+            val neighbours = position.orthogonals().filter {
                 it in range && it !in corrupted
             }
 
@@ -74,10 +74,5 @@ class MemorySpace(
                 }
             }
         }
-    }
-
-
-    private fun Vector2.adjacent(): List<Vector2> {
-        return CARDINAL_DIRECTIONS.map(::plus)
     }
 }

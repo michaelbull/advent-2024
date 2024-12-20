@@ -1,12 +1,14 @@
 package com.github.michaelbull.advent2024.day06
 
+import com.github.michaelbull.advent2024.math.Direction
+import com.github.michaelbull.advent2024.math.Direction.EAST
+import com.github.michaelbull.advent2024.math.Direction.NORTH
+import com.github.michaelbull.advent2024.math.Direction.SOUTH
+import com.github.michaelbull.advent2024.math.Direction.WEST
 import com.github.michaelbull.advent2024.math.Vector2
-import com.github.michaelbull.advent2024.math.Vector2.Companion.EAST
-import com.github.michaelbull.advent2024.math.Vector2.Companion.NORTH
-import com.github.michaelbull.advent2024.math.Vector2.Companion.SOUTH
-import com.github.michaelbull.advent2024.math.Vector2.Companion.WEST
 import com.github.michaelbull.advent2024.math.grid.CharGrid
 import com.github.michaelbull.advent2024.math.grid.toCharGrid
+import com.github.michaelbull.advent2024.math.translateIn
 
 fun Sequence<String>.toLabMap(): LabMap {
     return LabMap(toCharGrid())
@@ -33,12 +35,12 @@ class LabMap(private val grid: CharGrid) {
         while (steps.add(Step(position, direction))) {
             positions += position
 
-            val nextPosition = position + direction
+            val nextPosition = position.translateIn(direction)
 
             when {
                 nextPosition !in grid -> return TerminalPath(positions)
-                nextPosition == obstruction -> direction = direction.turn()
-                isObstructionAt(nextPosition) -> direction = direction.turn()
+                nextPosition == obstruction -> direction = direction.turnOrthogonally()
+                isObstructionAt(nextPosition) -> direction = direction.turnOrthogonally()
                 else -> position = nextPosition
             }
         }
@@ -66,7 +68,7 @@ class LabMap(private val grid: CharGrid) {
         return grid[position] == OBSTRUCTION
     }
 
-    private fun Vector2.turn(): Vector2 {
+    private fun Direction.turnOrthogonally(): Direction {
         return when (this) {
             NORTH -> WEST
             EAST -> NORTH

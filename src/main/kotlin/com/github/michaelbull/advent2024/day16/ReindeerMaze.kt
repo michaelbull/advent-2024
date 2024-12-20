@@ -1,8 +1,8 @@
 package com.github.michaelbull.advent2024.day16
 
+import com.github.michaelbull.advent2024.math.Direction
+import com.github.michaelbull.advent2024.math.Direction.EAST
 import com.github.michaelbull.advent2024.math.Vector2
-import com.github.michaelbull.advent2024.math.Vector2.Companion.CARDINAL_DIRECTIONS
-import com.github.michaelbull.advent2024.math.Vector2.Companion.EAST
 import com.github.michaelbull.advent2024.math.grid.CharGrid
 import com.github.michaelbull.advent2024.math.grid.toCharGrid
 import java.util.PriorityQueue
@@ -79,14 +79,14 @@ class ReindeerMaze(
     }
 
     private fun Vector2.neighbours(): List<Step> {
-        return CARDINAL_DIRECTIONS
+        return Direction.CARDINALS
             .map(::stepIn)
             .filter(grid::contains)
     }
 }
 
-private fun Vector2.stepIn(direction: Vector2): Step {
-    return Step(this + direction, direction)
+private fun Vector2.stepIn(direction: Direction): Step {
+    return Step(this + direction.translation, direction)
 }
 
 private operator fun CharGrid.contains(step: Step): Boolean {

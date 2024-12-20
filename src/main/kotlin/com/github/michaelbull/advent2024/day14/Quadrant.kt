@@ -1,5 +1,9 @@
 package com.github.michaelbull.advent2024.day14
 
+import com.github.michaelbull.advent2024.math.Direction.NORTH_EAST
+import com.github.michaelbull.advent2024.math.Direction.NORTH_WEST
+import com.github.michaelbull.advent2024.math.Direction.SOUTH_EAST
+import com.github.michaelbull.advent2024.math.Direction.SOUTH_WEST
 import com.github.michaelbull.advent2024.math.Vector2
 
 /**
@@ -14,10 +18,10 @@ sealed interface Quadrant {
 
 fun Vector2.toQuadrantOrNull(): Quadrant? {
     return when (sign()) {
-        Vector2.NORTH_EAST -> Quadrant.I
-        Vector2.NORTH_WEST -> Quadrant.II
-        Vector2.SOUTH_WEST -> Quadrant.III
-        Vector2.SOUTH_EAST -> Quadrant.IV
+        NORTH_EAST.translation -> Quadrant.I
+        NORTH_WEST.translation -> Quadrant.II
+        SOUTH_WEST.translation -> Quadrant.III
+        SOUTH_EAST.translation -> Quadrant.IV
         else -> null
     }
 }

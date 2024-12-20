@@ -1,9 +1,9 @@
 package com.github.michaelbull.advent2024.day10
 
 import com.github.michaelbull.advent2024.math.Vector2
-import com.github.michaelbull.advent2024.math.Vector2.Companion.CARDINAL_DIRECTIONS
 import com.github.michaelbull.advent2024.math.grid.IntGrid
 import com.github.michaelbull.advent2024.math.grid.toIntGrid
+import com.github.michaelbull.advent2024.math.orthogonals
 
 fun Sequence<String>.toTopographicMap(): TopographicMap {
     return TopographicMap(toIntGrid())
@@ -46,11 +46,7 @@ class TopographicMap(
     }
 
     private fun Vector2.uphillSteps(): List<Vector2> {
-        return adjacent().filter { it isUphillFrom this }
-    }
-
-    private fun Vector2.adjacent(): List<Vector2> {
-        return CARDINAL_DIRECTIONS.map(::plus)
+        return orthogonals().filter { it isUphillFrom this }
     }
 
     private infix fun Vector2.isUphillFrom(position: Vector2): Boolean {

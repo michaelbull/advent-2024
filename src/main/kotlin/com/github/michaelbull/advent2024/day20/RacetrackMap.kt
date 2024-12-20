@@ -1,10 +1,10 @@
 package com.github.michaelbull.advent2024.day20
 
 import com.github.michaelbull.advent2024.math.Vector2
-import com.github.michaelbull.advent2024.math.Vector2.Companion.CARDINAL_DIRECTIONS
 import com.github.michaelbull.advent2024.math.distance.manhattanDistance
 import com.github.michaelbull.advent2024.math.grid.CharGrid
 import com.github.michaelbull.advent2024.math.grid.toCharGrid
+import com.github.michaelbull.advent2024.math.orthogonals
 import com.github.michaelbull.advent2024.math.range.symmetricRange
 import com.github.michaelbull.advent2024.math.toVector2
 import com.github.michaelbull.itertools.product
@@ -40,7 +40,7 @@ class RacetrackMap(
 
         while (queue.isNotEmpty()) {
             val current = queue.poll()
-            val neighbours = current.adjacent().filterNot(::isWallAt)
+            val neighbours = current.orthogonals().filterNot(::isWallAt)
 
             for (neighbour in neighbours) {
                 val alt = distances[current]!! + 1
@@ -62,10 +62,6 @@ class RacetrackMap(
 
     private fun startPosition(): Vector2 {
         return grid.first { it.second == 'S' }.first
-    }
-
-    private fun Vector2.adjacent(): List<Vector2> {
-        return CARDINAL_DIRECTIONS.map(::plus)
     }
 
     private fun Map<Vector2, Int>.getWithCheat(current: Map.Entry<Vector2, Int>, cheat: Map.Entry<Vector2, Int>): Int? {

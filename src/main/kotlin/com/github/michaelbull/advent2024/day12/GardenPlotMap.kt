@@ -1,13 +1,14 @@
 package com.github.michaelbull.advent2024.day12
 
+import com.github.michaelbull.advent2024.math.Direction
+import com.github.michaelbull.advent2024.math.Direction.EAST
+import com.github.michaelbull.advent2024.math.Direction.NORTH
+import com.github.michaelbull.advent2024.math.Direction.SOUTH
+import com.github.michaelbull.advent2024.math.Direction.WEST
 import com.github.michaelbull.advent2024.math.Vector2
-import com.github.michaelbull.advent2024.math.Vector2.Companion.CARDINAL_DIRECTIONS
-import com.github.michaelbull.advent2024.math.Vector2.Companion.EAST
-import com.github.michaelbull.advent2024.math.Vector2.Companion.NORTH
-import com.github.michaelbull.advent2024.math.Vector2.Companion.SOUTH
-import com.github.michaelbull.advent2024.math.Vector2.Companion.WEST
 import com.github.michaelbull.advent2024.math.grid.CharGrid
 import com.github.michaelbull.advent2024.math.grid.toCharGrid
+import com.github.michaelbull.advent2024.math.orthogonals
 
 fun Sequence<String>.toGardenPlotMap(): GardenPlotMap {
     return GardenPlotMap(toCharGrid())
@@ -63,7 +64,7 @@ class GardenPlotMap(
 
         while (queue.isNotEmpty()) {
             val position = queue.removeFirst()
-            val adjacent = position.adjacentTo(plant)
+            val adjacent = position.orthogonallyAdjacentTo(plant)
 
             yield(position to adjacent)
 
@@ -72,34 +73,34 @@ class GardenPlotMap(
     }
 
     private fun Set<Vector2>.countExposedSides(): Int {
-        return CARDINAL_DIRECTIONS.sumOf { direction ->
+        return Direction.CARDINALS.sumOf { direction ->
             countExposedSides(direction)
         }
     }
 
-    private fun Set<Vector2>.countExposedSides(direction: Vector2): Int {
+    private fun Set<Vector2>.countExposedSides(direction: Direction): Int {
         val sides = sides(direction)
         val internalSides = sides.walk(direction.turn())
         return sides.size - internalSides.size
     }
 
-    private fun Set<Vector2>.sides(direction: Vector2): Set<Vector2> {
-        return map(direction::plus)
+    private fun Set<Vector2>.sides(direction: Direction): Set<Vector2> {
+        return map(direction::translate)
             .filterNot(::contains)
             .toSet()
     }
 
-    private fun Set<Vector2>.walk(direction: Vector2): Set<Vector2> {
+    private fun Set<Vector2>.walk(direction: Direction): Set<Vector2> {
         return flatMapTo(mutableSetOf()) { position ->
             walk(position, direction)
         }
     }
 
-    private fun Set<Vector2>.walk(position: Vector2, direction: Vector2): Sequence<Vector2> {
-        return generateSequence(position + direction, direction::plus).takeWhile(::contains)
+    private fun Set<Vector2>.walk(position: Vector2, direction: Direction): Sequence<Vector2> {
+        return generateSequence(direction.translate(position), direction::translate).takeWhile(::contains)
     }
 
-    private fun Vector2.turn(): Vector2 {
+    private fun Direction.turn(): Direction {
         return when (this) {
             NORTH -> EAST
             EAST -> SOUTH
@@ -109,12 +110,8 @@ class GardenPlotMap(
         }
     }
 
-    private fun Vector2.adjacent(): List<Vector2> {
-        return CARDINAL_DIRECTIONS.map(::plus)
-    }
-
-    private fun Vector2.adjacentTo(plant: Char): List<Vector2> {
-        return adjacent().filter { it inRegionOf plant }
+    private fun Vector2.orthogonallyAdjacentTo(plant: Char): List<Vector2> {
+        return orthogonals().filter { it inRegionOf plant }
     }
 
     private infix fun Vector2.inRegionOf(plant: Char): Boolean {
