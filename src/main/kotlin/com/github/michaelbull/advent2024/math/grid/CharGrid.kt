@@ -2,6 +2,10 @@ package com.github.michaelbull.advent2024.math.grid
 
 import com.github.michaelbull.advent2024.math.Vector2
 
+fun String.toCharGrid(): CharGrid {
+    return trimIndent().lineSequence().toCharGrid()
+}
+
 fun Sequence<String>.toCharGrid(): CharGrid {
     return toList().toCharGrid()
 }
