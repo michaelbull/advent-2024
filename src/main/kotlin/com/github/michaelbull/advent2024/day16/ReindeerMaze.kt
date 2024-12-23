@@ -55,18 +55,18 @@ class ReindeerMaze(
                 yield(reindeer)
             }
 
-            val neighbours = reindeer.step.tile.neighbours()
+            val neighbors = reindeer.step.tile.neighbors()
 
-            for (neighbour in neighbours) {
-                val alt = reindeer.score + reindeer.scoreToMoveIn(neighbour.direction)
-                val score = scores.getOrDefault(neighbour, Int.MAX_VALUE)
+            for (neighbor in neighbors) {
+                val alt = reindeer.score + reindeer.scoreToMoveIn(neighbor.direction)
+                val score = scores.getOrDefault(neighbor, Int.MAX_VALUE)
 
                 if (alt <= score) {
-                    scores[neighbour] = alt
+                    scores[neighbor] = alt
 
                     queue += Reindeer(
-                        step = neighbour,
-                        tiles = reindeer.tiles + neighbour.tile,
+                        step = neighbor,
+                        tiles = reindeer.tiles + neighbor.tile,
                         score = alt,
                     )
                 }
@@ -78,7 +78,7 @@ class ReindeerMaze(
         return grid.first { it.second == char }.first
     }
 
-    private fun Vector2.neighbours(): List<Step> {
+    private fun Vector2.neighbors(): List<Step> {
         return Direction.CARDINALS
             .map(::stepIn)
             .filter(grid::contains)

@@ -40,15 +40,15 @@ class RacetrackMap(
 
         while (queue.isNotEmpty()) {
             val current = queue.poll()
-            val neighbours = current.orthogonals().filterNot(::isWallAt)
+            val neighbors = current.orthogonals().filterNot(::isWallAt)
 
-            for (neighbour in neighbours) {
+            for (neighbor in neighbors) {
                 val alt = distances[current]!! + 1
-                val distance = distances.getOrDefault(neighbour, Int.MAX_VALUE)
+                val distance = distances.getOrDefault(neighbor, Int.MAX_VALUE)
 
                 if (alt < distance) {
-                    distances[neighbour] = alt
-                    queue += neighbour
+                    distances[neighbor] = alt
+                    queue += neighbor
                 }
             }
         }
@@ -56,8 +56,8 @@ class RacetrackMap(
         return distances
     }
 
-    private fun isWallAt(neighbour: Vector2): Boolean {
-        return grid[neighbour] == '#'
+    private fun isWallAt(position: Vector2): Boolean {
+        return grid[position] == '#'
     }
 
     private fun startPosition(): Vector2 {

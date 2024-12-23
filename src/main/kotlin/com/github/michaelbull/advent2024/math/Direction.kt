@@ -2,7 +2,7 @@ package com.github.michaelbull.advent2024.math
 
 import java.util.EnumSet
 
-fun Vector2.adjacent(): List<Vector2> {
+fun Vector2.neighbors(): List<Vector2> {
     return Direction.entries.map(::translateIn)
 }
 

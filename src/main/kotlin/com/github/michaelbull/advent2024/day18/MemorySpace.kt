@@ -43,17 +43,17 @@ class MemorySpace(
                 yield(distances[position]!!)
             }
 
-            val neighbours = position.orthogonals().filter {
+            val neighbors = position.orthogonals().filter {
                 it in range && it !in corrupted
             }
 
-            for (neighbour in neighbours) {
+            for (neighbor in neighbors) {
                 val alt = distances[position]!! + 1
-                val distance = distances.getOrDefault(neighbour, Int.MAX_VALUE)
+                val distance = distances.getOrDefault(neighbor, Int.MAX_VALUE)
 
                 if (alt < distance) {
-                    distances[neighbour] = alt
-                    queue += neighbour
+                    distances[neighbor] = alt
+                    queue += neighbor
                 }
             }
         }
