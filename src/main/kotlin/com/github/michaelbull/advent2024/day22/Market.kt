@@ -7,13 +7,11 @@ fun Sequence<String>.toMarket(): Market {
     return Market(map(String::toLong).toList())
 }
 
-private typealias Evolution = (Long) -> Long
-
 class Market(
     private val secretNumbers: List<Long>,
 ) {
 
-    private val evolutions = listOf(
+    private val evolutionProcess = listOf(
         ::mul64,
         ::div32,
         ::mul2048,
@@ -21,7 +19,7 @@ class Market(
 
     fun sumSecretNumbers(number: Int): Long {
         return secretNumbers.sumOf { initial ->
-            evolutionSequence(initial, evolutions)
+            evolutions(initial)
                 .take(number + 1)
                 .last()
         }
@@ -46,40 +44,38 @@ class Market(
         return bananas.max()
     }
 
-    private fun evolutionSequence(secretNumber: Long, evolutions: Iterable<Evolution>): Sequence<Long> {
-        return generateSequence(secretNumber) { secretNumber ->
-            evolve(secretNumber, evolutions)
+    private fun evolutions(secretNumber: Long): Sequence<Long> {
+        return generateSequence(secretNumber, ::evolve)
+    }
+
+    private fun evolve(secretNumber: Long): Long {
+        return evolutionProcess.fold(secretNumber) { secretNumber, step ->
+            step(secretNumber).mix(secretNumber).prune()
         }
     }
 
-    private fun evolve(secretNumber: Long, evolutions: Iterable<Evolution>): Long {
-        return evolutions.fold(secretNumber) { secretNumber, evolve ->
-            evolve(secretNumber).mix(secretNumber).prune()
-        }
+    private fun mul2048(secretNumber: Long): Long {
+        return secretNumber shl 11
     }
 
-    private fun mul2048(result: Long): Long {
-        return result shl 11
+    private fun div32(secretNumber: Long): Long {
+        return secretNumber shr 5
     }
 
-    private fun div32(result: Long): Long {
-        return result shr 5
-    }
-
-    private fun mul64(result: Long): Long {
-        return result shl 6
+    private fun mul64(secretNumber: Long): Long {
+        return secretNumber shl 6
     }
 
     private fun Long.prune(): Long {
         return this and PRUNE_MASK
     }
 
-    private fun Long.mix(number: Long): Long {
-        return number xor this
+    private infix fun Long.mix(secretNumber: Long): Long {
+        return secretNumber xor this
     }
 
     private fun priceChanges(number: Int, secretNumber: Long): Sequence<List<Long>> {
-        return evolutionSequence(secretNumber, evolutions)
+        return evolutions(secretNumber)
             .take(number + 1)
             .map { it % PRICES }
             .windowed(CHANGES + 1)
