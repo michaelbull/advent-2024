@@ -143,7 +143,7 @@ class Monitor(
 
     private fun Connection.xorProduces(outputPrefix: Char, lastOutput: String): Boolean {
         return if (output.startsWith(outputPrefix)) {
-            return operand == Xor || output == lastOutput
+            operand == Xor || output == lastOutput
         } else {
             true
         }
@@ -153,7 +153,7 @@ class Monitor(
         return if (output.startsWith(outputPrefix)) {
             true
         } else if (operand == Xor) {
-            return from.isInitialValue() || to.isInitialValue()
+            from.isInitialValue() || to.isInitialValue()
         } else {
             true
         }
